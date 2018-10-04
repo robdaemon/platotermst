@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdlib.h>
 #include <gem.h>
 #include <windom.h>
 #include "protocol.h"
@@ -18,8 +19,9 @@ int main(void)
   io_init();
   screen_init();
   applinit();
+  graf_mouse(M_OFF,NULL);
   terminal_show_greeting();
-  appl_show_ready();
+  graf_mouse(M_ON,NULL);
   terminal_init();
   already_started=true;
   appl_show_menu();

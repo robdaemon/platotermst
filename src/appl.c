@@ -73,14 +73,14 @@ static void appl_moved(WINDOW* win, short wbuff[8])
 static void appl_ontop(WINDOW* win, short wbuff[8])
 {
   WindSet(win,WF_TOP,0,0,0,0);
-  appl_clear_screen();
+  EvntRedraw(win);
   on_top=TRUE;
-  /* screen_remap_palette(); */
 }
 
 static void appl_offtop(WINDOW* win, short wbuff[8])
 {
   WindSet(win,WF_BOTTOM,0,0,0,0);
+  EvntRedraw(win);
   on_top=FALSE;
 }
 
@@ -227,7 +227,7 @@ void appl_form_quit(void)
   if (FormAlert(2,"[1][Quit PLATOTerm?][Yes|No]")==1)
     {
       io_hang_up();
-      ApplWrite( _AESapid, WM_CLOSED, win->handle, 0, 0, 0, 0);
+      ApplWrite( _AESapid, WM_DESTROY, win->handle, 0, 0, 0, 0);
       ApplWrite( _AESapid, AP_TERM, 0, 0, 0, 0, 0);
     }
 }
@@ -362,11 +362,13 @@ void applmain(void)
 void appl_show_menu(void)
 {
   MenuEnable();
+  graf_mouse(M_ON,NULL);
 }
 
 void appl_hide_menu(void)
 {
   MenuDisable();
+  graf_mouse(M_OFF,NULL);
 }
 
 /**
@@ -387,6 +389,8 @@ void appl_clear_screen(void)
   short xy[8];
   short xw,yw,ww,hw;
 
+  graf_mouse(M_OFF,NULL);
+  
   if (full_screen==true)
     {
       vswr_mode( app.aeshdl, MD_REPLACE);
@@ -412,8 +416,7 @@ void appl_clear_screen(void)
  */
 void appl_fullscreen(void)
 {
-  // appl_clear_screen();
-  // v_show_c( app.aeshdl, 1);
+  on_top=true;
   appl_screen_visible=true;
 }
 
