@@ -33,7 +33,7 @@ void keyboard_main(int code, unsigned char shift)
   unsigned char key=code>>8;
   if (key==0x3b)
     {
-      MenuEnable();
+      appl_show_menu();
     }
   else if (key==0x44)
     {

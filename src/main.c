@@ -10,7 +10,6 @@
 
 unsigned char already_started=false;
 
-extern padByte splash[];
 extern short appl_init_successful;
 
 int main(void)

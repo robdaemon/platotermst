@@ -153,6 +153,7 @@ void applinit(void)
       win=WindCreate(0,app.x,app.y,app.w,app.h);
       WindOpen( win, app.x, app.y, app.x+app.w, app.y+app.h);
       appl_fullscreen();
+      on_top=true;
     }
   else
     {
@@ -175,6 +176,8 @@ void applinit(void)
   // Attach to window manager messages
   EvntAttach(win,WM_TOPPED,appl_ontop);
   EvntAttach(win,WM_UNTOPPED,appl_offtop);
+  EvntAdd(win,WM_NEWTOP,appl_ontop,EV_BOT);
+  EvntAdd(win,WM_ONTOP,appl_ontop,EV_BOT);
   EvntAttach(win,WM_REDRAW,appl_redraw);
   EvntAttach(win,WM_MOVED,appl_moved);
   EvntAttach(win,WM_CLOSED,appl_closed);
@@ -188,6 +191,7 @@ void applinit(void)
   ObjcAttachMenuFunc(NULL,MENU_QUIT,appl_menu_quit,NULL);
   ObjcAttachMenuFunc(NULL,MENU_PLATO_KEYBOARD,appl_menu_help_keys,NULL);
   ObjcAttachMenuFunc(NULL,MENU_MICRO_KEYS,appl_menu_micro_keys,NULL);
+  ApplWrite(_AESapid,WM_TOPPED,win->handle,0,0,0,0);
   appl_init_successful=true;
   
 }
@@ -238,6 +242,7 @@ void appl_form_quit(void)
  */
 static void appl_menu_about(WINDOW *win, int index, int title, void *data)
 {
+  MenuTnormal(NULL,3,1);
   MenuTnormal(NULL,index,1);
   FormAlert(1,"[2][PLATOTerm 0.5|A PLATO Terminal Emulator|by Thomas Cherryhomes|Copyright (c) 2018 IRATA.ONLINE][OK]");
 }
@@ -361,14 +366,22 @@ void applmain(void)
 
 void appl_show_menu(void)
 {
-  MenuEnable();
-  graf_mouse(M_ON,NULL);
+  if (full_screen==true)
+    {
+      GRECT drawRect={0,0,app.w,app.h};
+      
+      MenuDisable();
+      EvntRedrawGrect(win,&drawRect);
+      MenuEnable();
+    }
 }
 
 void appl_hide_menu(void)
 {
-  MenuDisable();
-  graf_mouse(M_OFF,NULL);
+  if (full_screen==true)
+    {
+      MenuDisable();
+    }
 }
 
 /**
@@ -388,8 +401,6 @@ void appl_clear_screen(void)
 {
   short xy[8];
   short xw,yw,ww,hw;
-
-  graf_mouse(M_OFF,NULL);
   
   if (full_screen==true)
     {
@@ -514,23 +525,6 @@ void appl_hang_up(void)
       io_hang_up();
     }
   
-}
-
-/**
- * Show ready prompt
- */
-void appl_show_ready(void)
-{
-  vst_color(app.aeshdl,1);
-  if (appl_atari_low_res==true)
-    {
-      v_gtext(app.aeshdl,0,184,"PLATOTerm Ready. F1 for Settings.");
-      v_gtext(app.aeshdl,0,192,"HELP for keys. F10 to exit.");
-    }
-  else
-    {
-      v_gtext(app.aeshdl,64,app.work_out[1]-12,"PLATOTerm Ready. F1 for Settings. HELP for keys. F10 to exit.");
-    }
 }
 
 /**

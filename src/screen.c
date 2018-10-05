@@ -660,8 +660,8 @@ void screen_redraw(GRECT area)
 	return; // Only do the most recent addition if appending.
       else
 	node=node->next;
-      
     }
+  screen_remap_palette();
 }
 
 /**
