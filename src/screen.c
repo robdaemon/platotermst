@@ -40,7 +40,8 @@ extern short on_top;
 static char tmptxt[80];
 
 static bool queue_updated;
-ScreenOpNode* screen_queue;
+static ScreenOp screen_queue[1024];
+static short screen_queue_size=0;
 
 #define VDI_COLOR_SCALE 3.91 
 
@@ -87,7 +88,7 @@ short screen_y(short y)
  */
 void screen_init(void)
 {
-  screen_queue_init(&screen_queue);
+  memset(screen_queue,0,sizeof(screen_queue));
 }
 
 /**
@@ -144,6 +145,7 @@ void screen_clear(void)
 {
   short x,y,w,h;
   ScreenOp op;
+  memset(&screen_queue,0,sizeof(screen_queue));
   op.type = SCREEN_OP_CLEAR;
   op.foreground.red=foreground_rgb.red;
   op.foreground.green=foreground_rgb.green;
@@ -151,8 +153,6 @@ void screen_clear(void)
   op.background.red=background_rgb.red;
   op.background.green=background_rgb.green;
   op.background.blue=background_rgb.blue;
-  screen_queue=screen_queue_free_list(screen_queue);
-  screen_queue=screen_queue_add(screen_queue,op);
   _screen_clear(&op);
 }
 
@@ -186,15 +186,16 @@ void screen_block_draw(padPt* Coord1, padPt* Coord2)
 {
   ScreenOp op;
   GRECT drawRect;
-  op.type=SCREEN_OP_BLOCK_DRAW;
-  op.Coord1.x = Coord1->x;
-  op.Coord1.y = Coord1->y;
-  op.Coord2.x = Coord2->x;
-  op.Coord2.y = Coord2->y;
-  op.foreground = foreground_rgb;
-  op.background = background_rgb;
-  op.CurMode = CurMode;
-  screen_queue=screen_queue_add(screen_queue,op);
+  screen_queue_size++;
+  screen_queue[screen_queue_size].type=SCREEN_OP_BLOCK_DRAW;
+  screen_queue[screen_queue_size].Coord1.x = Coord1->x;
+  screen_queue[screen_queue_size].Coord1.y = Coord1->y;
+  screen_queue[screen_queue_size].Coord2.x = Coord2->x;
+  screen_queue[screen_queue_size].Coord2.y = Coord2->y;
+  screen_queue[screen_queue_size].foreground = foreground_rgb;
+  screen_queue[screen_queue_size].background = background_rgb;
+  screen_queue[screen_queue_size].CurMode = CurMode;
+
   drawRect.g_x=screen_x(Coord1->x)+1;
   drawRect.g_y=screen_y(Coord1->y)+1;
   drawRect.g_w=abs((screen_x(Coord2->x)+1)-(screen_x(Coord1->x)+1));
@@ -203,7 +204,7 @@ void screen_block_draw(padPt* Coord1, padPt* Coord2)
   queue_updated=true;
   
   if (on_top==true)
-    _screen_block_draw(&op);
+    _screen_block_draw(&screen_queue[screen_queue_size]);
   else
     EvntRedrawGrect(win,&drawRect);
   
@@ -241,15 +242,14 @@ void _screen_block_draw(ScreenOp* op)
  */
 void screen_dot_draw(padPt* Coord)
 {
-  ScreenOp op;
   GRECT drawRect;
-  op.type = SCREEN_OP_DOT;
-  op.Coord1.x = Coord->x;
-  op.Coord1.y = Coord->y;
-  op.foreground = foreground_rgb;
-  op.background = background_rgb;
-  op.CurMode = CurMode;
-  screen_queue=screen_queue_add(screen_queue,op);
+  screen_queue_size++;
+  screen_queue[screen_queue_size].type = SCREEN_OP_DOT;
+  screen_queue[screen_queue_size].Coord1.x = Coord->x;
+  screen_queue[screen_queue_size].Coord1.y = Coord->y;
+  screen_queue[screen_queue_size].foreground = foreground_rgb;
+  screen_queue[screen_queue_size].background = background_rgb;
+  screen_queue[screen_queue_size].CurMode = CurMode;
   drawRect.g_x=(screen_x(Coord->x)+1);
   drawRect.g_y=(screen_y(Coord->y)+1);
   drawRect.g_w=2;
@@ -258,7 +258,7 @@ void screen_dot_draw(padPt* Coord)
   queue_updated=true;
   
   if (on_top==true)
-    _screen_dot_draw(&op);
+    _screen_dot_draw(&screen_queue[screen_queue_size]);
   else
     EvntRedrawGrect(win,&drawRect);
   
@@ -301,24 +301,24 @@ void screen_line_draw(padPt* Coord1, padPt* Coord2)
 {
   ScreenOp op;
   GRECT drawRect;
-  op.type = SCREEN_OP_LINE;
-  op.Coord1.x = Coord1->x;
-  op.Coord1.y = Coord1->y;
-  op.Coord2.x = Coord2->x;
-  op.Coord2.y = Coord2->y;
-  op.foreground = foreground_rgb;
-  op.background = background_rgb;
-  op.CurMode = CurMode;
-  screen_queue=screen_queue_add(screen_queue,op);
-  drawRect.g_x=(screen_x(Coord1->x)+1);
-  drawRect.g_y=(screen_y(Coord1->y)+1);
-  drawRect.g_w=abs((screen_x(Coord2->x)+1)-(screen_x(Coord1->x))+1);
-  drawRect.g_h=abs((screen_y(Coord2->y)+1)-(screen_y(Coord1->y))+1);
+  screen_queue_size++;
+  screen_queue[screen_queue_size].type = SCREEN_OP_LINE;
+  screen_queue[screen_queue_size].Coord1.x = Coord1->x;
+  screen_queue[screen_queue_size].Coord1.y = Coord1->y;
+  screen_queue[screen_queue_size].Coord2.x = Coord2->x;
+  screen_queue[screen_queue_size].Coord2.y = Coord2->y;
+  screen_queue[screen_queue_size].foreground = foreground_rgb;
+  screen_queue[screen_queue_size].background = background_rgb;
+  screen_queue[screen_queue_size].CurMode = CurMode;
+  /* drawRect.g_x=(screen_x(Coord1->x)+1); */
+  /* drawRect.g_y=(screen_y(Coord1->y)+1); */
+  /* drawRect.g_w=abs((screen_x(Coord2->x)+1)-(screen_x(Coord1->x))+1); */
+  /* drawRect.g_h=abs((screen_y(Coord2->y)+1)-(screen_y(Coord1->y))+1); */
   
   queue_updated=true;
 
   if (on_top==true)
-    _screen_line_draw(&op);
+    _screen_line_draw(&screen_queue[screen_queue_size]);
   else
     EvntRedrawGrect(win,&drawRect);
   
@@ -382,19 +382,18 @@ void screen_char_draw(padPt* Coord, unsigned char* ch, unsigned char count)
 {
   ScreenOp op;
   GRECT drawRect;
-  op.type = SCREEN_OP_ALPHA;
-  op.Coord1.x = Coord->x;
-  op.Coord1.y = Coord->y;
-  op.foreground = foreground_rgb;
-  op.background = background_rgb;
-  strcpy(op.text,ch);
-  op.count=count;
-  op.textMem=CurMem;
-  op.TTY=TTY;
-  op.ModeBold=ModeBold;
-  op.Rotate=Rotate;
-  op.CurMode=CurMode;
-  screen_queue=screen_queue_add(screen_queue,op);
+  screen_queue[screen_queue_size].type = SCREEN_OP_ALPHA;
+  screen_queue[screen_queue_size].Coord1.x = Coord->x;
+  screen_queue[screen_queue_size].Coord1.y = Coord->y;
+  screen_queue[screen_queue_size].foreground = foreground_rgb;
+  screen_queue[screen_queue_size].background = background_rgb;
+  strcpy(screen_queue[screen_queue_size].text,ch);
+  screen_queue[screen_queue_size].count=count;
+  screen_queue[screen_queue_size].textMem=CurMem;
+  screen_queue[screen_queue_size].TTY=TTY;
+  screen_queue[screen_queue_size].ModeBold=ModeBold;
+  screen_queue[screen_queue_size].Rotate=Rotate;
+  screen_queue[screen_queue_size].CurMode=CurMode;
   drawRect.g_x=(screen_x(Coord->x)+1);
   drawRect.g_y=(screen_y(Coord->y)+1);
   drawRect.g_w=abs((screen_x((Coord->y*FONT_SIZE_X)*count)+1));
@@ -402,7 +401,7 @@ void screen_char_draw(padPt* Coord, unsigned char* ch, unsigned char count)
   
   queue_updated=true;
   if (on_top==true)
-    _screen_char_draw(&op);
+    _screen_char_draw(&screen_queue[screen_queue_size]);
   else
     EvntRedrawGrect(win,&drawRect);
   queue_updated=false;
@@ -578,7 +577,6 @@ void screen_tty_char(padByte theChar)
  */
 void screen_done(void)
 {
-  screen_queue=screen_queue_free_list(screen_queue);
 }
 
 void screen_redraw_next(ScreenOp* op)
@@ -642,7 +640,7 @@ bool screen_op_in_area(ScreenOp* op, GRECT area)
  */
 void screen_redraw(GRECT area)
 {
-  ScreenOpNode* node=screen_queue;
+  short i=0;
   short pxyarray[4]={(area.g_x-1),(area.g_y-1),(area.g_x+area.g_w)-1,(area.g_y+area.g_h)-1};
   if (queue_updated==false)
     {
@@ -651,15 +649,23 @@ void screen_redraw(GRECT area)
       vsf_color(app.aeshdl,0);
       v_bar(app.aeshdl,pxyarray);
     }
-  
-  while (node!=NULL)
-    {
-      screen_redraw_next(&node->op);
 
-      if (queue_updated==true)
-	return; // Only do the most recent addition if appending.
-      else
-	node=node->next;
+  if (queue_updated)
+    {
+      screen_redraw_next(&screen_queue[screen_queue_size]);
+      return;
+    }
+  else
+    {
+      while (i<screen_queue_size)
+	{
+	  screen_redraw_next(&screen_queue[i]);
+	  
+	  if (queue_updated==true)
+	    return; // Only do the most recent addition if appending.
+	  else
+	    i++;
+	}
     }
   screen_remap_palette();
 }
@@ -754,12 +760,11 @@ void screen_paint(padPt* Coord)
 {
   ScreenOp op;
   short x,y,w,h;
-  op.type=SCREEN_OP_PAINT;
-  op.Coord1.x = Coord->x;
-  op.Coord1.y = Coord->y;
-  op.foreground = foreground_rgb;
-  op.background = background_rgb;
-  screen_queue=screen_queue_add(screen_queue,op);
+  screen_queue[screen_queue_size].type=SCREEN_OP_PAINT;
+  screen_queue[screen_queue_size].Coord1.x = Coord->x;
+  screen_queue[screen_queue_size].Coord1.y = Coord->y;
+  screen_queue[screen_queue_size].foreground = foreground_rgb;
+  screen_queue[screen_queue_size].background = background_rgb;
   WindGet(win,WF_WORKXYWH,&x,&y,&w,&h);
   queue_updated=true;
   if (on_top==true)
