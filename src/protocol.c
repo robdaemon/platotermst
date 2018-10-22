@@ -12,7 +12,6 @@
 
 /* Copyright (c) 1990 by Steve Peltz */
 
-#include <stdbool.h>
 #include "protocol.h"
 #include "terminal.h"
 
@@ -157,7 +156,6 @@ InitTTY (void)
 void
 InitPLATO (void)
 {
-  // Key (0x382);			/* master reset key */
   if (TTY)
     InitPLATOx ();
 }
@@ -231,7 +229,6 @@ Key (padWord theKey)
 
 void	Touch(padPt* where)
 {
-  // Send FGT (Fine Grained Touch) data.
   io_send_byte(0x1b);
   io_send_byte(0x1f);
   io_send_byte(0x40 + (where->x & 0x1f));
@@ -239,7 +236,6 @@ void	Touch(padPt* where)
   io_send_byte(0x40 + (where->y & 0x1f));
   io_send_byte(0x40 + ((where->y >> 5) & 0x0f));
   
-  // Send coarse touch data
   Key(0x100 | ((where->x >> 1) & 0xF0) |
       ((where->y >> 5) & 0x0F));
 }
@@ -441,7 +437,7 @@ Blockx (void)
       LoadCoordx (&NewCoord);
       screen_block_draw (&CurCoord, &NewCoord);
       SubMode = 0;
-      CurCoord.y-=15; // s0ascers 3.2.3.1.2.5, last paragraph.
+      CurCoord.y-=15; 
     }
 }
 
@@ -782,10 +778,8 @@ ShowPLATO (padByte *buff, unsigned short count)
   while (count--)
     {
       theChar = *buff++;
-      // Save in terminal buffer.
       if (lastChar==0xFF && theChar==0xFF)
 	{
-	  // Drop this character, it is an escaped TELNET IAC.
 	  lastChar=0;
 	}
       else

@@ -1,0 +1,58 @@
+; **************************
+; * PLATOTerm for Atari ST *
+; **************************
+
+; ** Output File ****************
+PLATO.TOS
+; ** Options ********************
+.C [ -G -M -P -W-par -I..\TOOLS.RG\PURE_C\INCLUDE -I..\.. ]
+.L [ -F -G ]
+.S [ -1 -2 -S -Y ]
+
+=
+; ** Startup Module *************
+..\TOOLS.RG\PURE_C\LIB\PCSTART.O
+; ** GODLIB Primary Modules *****
+..\GODLIB\BASE\BASE.C
+..\GODLIB\COOKIE\COOKIE.C
+..\GODLIB\DEBUGLOG\DEBUGLOG.C
+..\GODLIB\GEMDOS\GEMDOS.C
+..\GODLIB\IKBD\IKBD.C
+..\GODLIB\MAIN\GOD_MAIN.C
+..\GODLIB\MEMORY\MEMORY.C
+..\GODLIB\MFP\MFP.C
+..\GODLIB\SYSTEM\SYSTEM.C
+..\GODLIB\VBL\VBL.C
+..\GODLIB\VIDEO\VIDEO.C
+..\GODLIB\VIDEO\VIDEL.C
+..\GODLIB\XBIOS\XBIOS.C
+; ** GODLIB assembler modules ***
+..\GODLIB\GEMDOS\GEMDOS_S.S
+..\GODLIB\IKBD\IKBD_S.S
+..\GODLIB\MEMORY\MEMORY_S.S
+..\GODLIB\MFP\MFP_S.S
+..\GODLIB\SYSTEM\SYSTEM_S.S
+..\GODLIB\VBL\VBL_S.S
+..\GODLIB\VECTOR\VECTOR_S.S
+..\GODLIB\VIDEO\VIDEO_S.S
+..\GODLIB\XBIOS\XBIOS_S.S
+; ** Main code ******************
+SRC\F-FULL.C
+SRC\F-HI.C
+SRC\F-LO.C
+SRC\F-MED.C
+SRC\F-TTM.C
+SRC\IO.C
+SRC\KEYBOARD.C
+SRC\MAIN.C
+SRC\PROTOCOL.C
+SRC\S-FULL.C
+SRC\S-HI.C
+SRC\S-LO.C
+SRC\S-MED.C
+SRC\S-TTM.C
+SRC\SCREEN.C
+SRC\TERMINAL.C
+SRC\TOUCH.C
+; ** Libraries *****************
+..\TOOLS.RG\PURE_C\LIB\PCSTDLIB.LIB       ; standard library

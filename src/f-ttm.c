@@ -2,12 +2,10 @@
  * Font definitions for font memories M0 and M1
  */
 
-#include <stdint.h>
+unsigned char FONT_TTMEDRES_SIZE_X=8;
+unsigned char FONT_TTMEDRES_SIZE_Y=15;
 
-uint8_t FONT_TTMEDRES_SIZE_X=8;
-uint8_t FONT_TTMEDRES_SIZE_Y=15; // Last line not used, for now
-
-uint16_t font_ttmedres[]={
+unsigned short font_ttmedres[]={
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,	/* 0x20  space */
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
 

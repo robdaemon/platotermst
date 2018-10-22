@@ -2,12 +2,10 @@
  * Font definitions for font memories M0 and M1
  */
 
-#include <stdint.h>
+unsigned char FONT_FULL_SIZE_X=8;
+unsigned char FONT_FULL_SIZE_Y=16;
 
-uint8_t FONT_FULL_SIZE_X=8;
-uint8_t FONT_FULL_SIZE_Y=16; // Last line not used, for now
-
-uint16_t font_fullres[]={
+unsigned short font_fullres[]={
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,	/* 0x20  space */
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
 
@@ -489,4 +487,4 @@ uint16_t font_fullres[]={
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000
 };
 
-uint16_t fontm23[2048];
+unsigned short fontm23[2048];

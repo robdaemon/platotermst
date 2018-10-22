@@ -2,12 +2,10 @@
  * Font definitions for font memories M0 and M1
  */
 
-#include <stdint.h>
+unsigned char FONT_HIRES_SIZE_X=8;
+unsigned char FONT_HIRES_SIZE_Y=12;
 
-uint8_t FONT_HIRES_SIZE_X=8;
-uint8_t FONT_HIRES_SIZE_Y=12;
-
-uint16_t font_hires[]={
+unsigned short font_hires[]={
   0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
   0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,     /* SPACE 0x20 */
   

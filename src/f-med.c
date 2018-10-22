@@ -2,12 +2,10 @@
  * Font definitions for font memories M0 and M1 (medium res 640x200)
  */
 
-#include <stdint.h>
+unsigned char FONT_SIZE_MEDRES_X=8;
+unsigned char FONT_SIZE_MEDRES_Y=6;
 
-uint8_t FONT_SIZE_MEDRES_X=8;
-uint8_t FONT_SIZE_MEDRES_Y=6;
-
-uint16_t font_medres[]={
+unsigned short font_medres[]={
   0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,    /* SPACE 0x20 */
   0x0800,0x0800,0x0800,0x0000,0x0800,0x0000,    /* ! 0x21 */
   0x2400,0x2400,0x0000,0x0000,0x0000,0x0000,    /* " 0x22 */

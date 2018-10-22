@@ -1,6 +1,10 @@
-#include <stdbool.h>
-#include <gem.h>
-#include <windom.h>
+#include	<GODLIB\GEMDOS\GEMDOS.H>
+#include	<GODLIB\GRAPHIC\GRAPHIC.H>
+#include	<GODLIB\IKBD\IKBD.H>
+#include	<GODLIB\MEMORY\MEMORY.H>
+#include	<GODLIB\SYSTEM\SYSTEM.H>
+#include	<GODLIB\VBL\VBL.H>
+#include	<GODLIB\VIDEO\VIDEO.H>
 #include "protocol.h"
 #include "screen.h"
 #include "io.h"
@@ -10,31 +14,13 @@
 unsigned char already_started=false;
 
 extern padByte splash[];
-extern short appl_init_successful;
 
-int main(void)
+short GodLib_Game_Main( short aArgCount, short * apArgs[] )
 {
-  config_init();
-  io_init();
-  screen_init();
-  applinit();
-  terminal_show_greeting();
-  appl_show_ready();
-  terminal_init();
-  already_started=true;
-  appl_show_menu();
+  (void)aArgCount;
+  (void)apArgs;
   
-  if (appl_init_successful==true)
-    {
-      applmain();
-      terminal_done();
-      appldone();
-      return 0;
-    }
-  else
-    {
-      terminal_done();
-      appldone();
-      return -1;
-    }
+  GemDos_Super( 0 );
+  
+  return 0;
 }

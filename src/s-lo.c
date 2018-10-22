@@ -7,10 +7,8 @@
  * scale.c - Scaling table to scale 512x512 to 320x192
  */
 
-#include <stdint.h>
-
 /* X and Y tables used to scale 512x512 PLATO display to 320x192 */
-uint16_t scalex_lores[]={
+unsigned short scalex_lores[]={
 0,1,2,2,3,4,4,5,
 5,6,7,7,8,9,9,10,
 10,11,12,12,13,14,14,15,
@@ -77,7 +75,7 @@ uint16_t scalex_lores[]={
 315,316,317,317,318,319,319,320,
 };
 
-uint16_t scaley_lores[]={
+unsigned short scaley_lores[]={
 192,192,191,191,191,190,190,189,
 189,189,188,188,188,187,187,186,
 186,186,185,185,185,184,184,183,

@@ -7,17 +7,14 @@
  * terminal.c - Terminal state functions
  */
 
-/* Some functions are intentionally stubbed. */
-#pragma warn(unused-param, off)
-
-#include <stdbool.h>
-#include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include "terminal.h"
 #include "screen.h"
-#include "appl.h"
 #include "splash.h"
+
+#define true 1
+#define false 0
 
 /**
  * ASCII Features to return in Features
@@ -53,10 +50,10 @@ extern unsigned char already_started;
 /**
  * appl.c externals
  */
-extern int16_t appl_atari_hi_res;
-extern int16_t appl_atari_med_res;      // Are we in Atari Med Res (640x200?)
-extern int16_t appl_atari_low_res;      // Are we in Atari Low Res (640x200?)
-extern int16_t appl_atari_tt_med_res;   // Are we in Atari TT Med Res (640x480?)
+extern short appl_atari_hi_res;
+extern short appl_atari_med_res;      
+extern short appl_atari_low_res;      
+extern short appl_atari_tt_med_res;   
 
 /**
  * terminal_init()
@@ -83,7 +80,7 @@ void terminal_show_greeting(void)
 void terminal_initial_position(void)
 {
   TTYLoc.x=0;
-  TTYLoc.y=100; // Right under splashscreen.
+  TTYLoc.y=100; 
 }
 
 /**
@@ -102,11 +99,11 @@ void terminal_set_tty(void)
   /* CurMode=ModeWrite;    /\* For speed reasons. *\/ */
   CharWide=8;
   CharHigh=16;
-  TTYLoc.x = 0;        // leftmost coordinate on screen
+  TTYLoc.x = 0;        
   if (already_started)
     TTYLoc.y=495;
   else
-    TTYLoc.y = 319;      // Top of screen - one character height
+    TTYLoc.y = 319;      
 }
 
 /**
@@ -241,36 +238,35 @@ void terminal_ext_out(padByte value)
 {
 }
 
-// Temporary PLATO character data, 8x16 matrix
 static unsigned char char_data[]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 				  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
-static unsigned char BTAB[]={0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01}; // flip one bit on (OR)
-static unsigned char BTAB_5[]={0x08,0x10,0x10,0x20,0x20,0x40,0x80,0x80}; // flip one bit on for the 5x6 matrix (OR)
+static unsigned char BTAB[]={0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01}; 
+static unsigned char BTAB_5[]={0x08,0x10,0x10,0x20,0x20,0x40,0x80,0x80}; 
 static unsigned char TAB_0_5[]={0x05,0x05,0x05,0x04,0x04,0x04,0x03,0x03,0x02,0x02,0x01,0x01,0x01,0x00,0x00,0x00};
 static unsigned char TAB_0_5i[]={0x00,0x00,0x00,0x01,0x01,0x01,0x02,0x02,0x03,0x03,0x04,0x04,0x04,0x05,0x05,0x05};
 
-static unsigned char TAB_0_4[]={0x00,0x00,0x01,0x02,0x02,0x03,0x03,0x04}; // return 0..4 given index 0 to 7
+static unsigned char TAB_0_4[]={0x00,0x00,0x01,0x02,0x02,0x03,0x03,0x04};
 
-static unsigned char PIX_THRESH[]={0x03,0x02,0x03,0x03,0x02, // Pixel threshold table.
+static unsigned char PIX_THRESH[]={0x03,0x02,0x03,0x03,0x02, 
 				   0x03,0x02,0x03,0x03,0x02,
 				   0x02,0x01,0x02,0x02,0x01,
 				   0x02,0x01,0x02,0x02,0x01,
 				   0x03,0x02,0x03,0x03,0x02,
 				   0x03,0x02,0x03,0x03,0x02};
 
-static unsigned char PIX_WEIGHTS[]={0x00,0x00,0x00,0x00,0x00, // Pixel weights
+static unsigned char PIX_WEIGHTS[]={0x00,0x00,0x00,0x00,0x00, 
 				    0x00,0x00,0x00,0x00,0x00,
 				    0x00,0x00,0x00,0x00,0x00,
 				    0x00,0x00,0x00,0x00,0x00,
 				    0x00,0x00,0x00,0x00,0x00,
 				    0x00,0x00,0x00,0x00,0x00};
 
-static unsigned char TAB_0_25[]={0,5,10,15,20,25}; // Given index 0 of 5, return multiple of 5.
+static unsigned char TAB_0_25[]={0,5,10,15,20,25}; 
 
-static unsigned char pix_cnt;     // total # of pixels
-static unsigned char curr_word;   // current word
-static unsigned char u,v;       // loop counters
+static unsigned char pix_cnt;     
+static unsigned char curr_word;   
+static unsigned char u,v;       
 
 extern unsigned short fontm23[2048];
 
@@ -281,45 +277,39 @@ extern unsigned short fontm23[2048];
 
 void terminal_char_load(padWord charNum, charData theChar)
 {
-  if (appl_atari_hi_res==TRUE)
-    terminal_char_load_hires(charNum,theChar);
-  else if (appl_atari_low_res==TRUE)
-    terminal_char_load_lores(charNum,theChar);
-  else if (appl_atari_med_res==TRUE)
-    terminal_char_load_medres(charNum,theChar);
-  else if (appl_atari_tt_med_res==TRUE)
-    terminal_char_load_ttmedres(charNum,theChar);
-  else
-    terminal_char_load_fullres(charNum,theChar);
+  /* if (appl_atari_hi_res==TRUE) */
+  /*   terminal_char_load_hires(charNum,theChar); */
+  /* else if (appl_atari_low_res==TRUE) */
+  /*   terminal_char_load_lores(charNum,theChar); */
+  /* else if (appl_atari_med_res==TRUE) */
+  /*   terminal_char_load_medres(charNum,theChar); */
+  /* else if (appl_atari_tt_med_res==TRUE) */
+  /*   terminal_char_load_ttmedres(charNum,theChar); */
+  /* else */
+  /*   terminal_char_load_fullres(charNum,theChar); */
 }
 
 void terminal_char_load_lores(padWord charNum, charData theChar)
 {
-  // Clear char data. 
   memset(char_data,0,sizeof(char_data));
   memset(PIX_WEIGHTS,0,sizeof(PIX_WEIGHTS));
   memset(&fontm23[charNum*6],0,12);
   
-  // Transpose character data.  
   for (curr_word=0;curr_word<8;curr_word++)
     {
       for (u=16; u-->0; )
 	{
-	  if (theChar[curr_word] & 1<<u)
+	  if ((theChar[curr_word]) & (1<<u))
 	    {
 	      pix_cnt++;
 	      PIX_WEIGHTS[TAB_0_25[TAB_0_5[u]]+TAB_0_4[curr_word]]++;
-	      char_data[u^0x0F&0x0F]|=BTAB[curr_word];
+	      char_data[(u^0x0F&0x0F)]|=BTAB[curr_word];
 	    }
 	}
     }
 
-  // Determine algorithm to use for number of pixels.
-  // Algorithm A is used when roughly half of the # of pixels are set.
-  // Algorithm B is used either when the image is densely or sparsely populated (based on pix_cnt).
   if ((54 <= pix_cnt) && (pix_cnt < 85))
     {
-      // Algorithm A - approx Half of pixels are set
       for (u=6; u-->0; )
   	{
   	  for (v=5; v-->0; )
@@ -331,7 +321,6 @@ void terminal_char_load_lores(padWord charNum, charData theChar)
     }
   else if ((pix_cnt < 54) || (pix_cnt >= 85))
     {
-      // Algorithm B - Sparsely or heavily populated bitmaps
       for (u=16; u-->0; )
 	{
 	  for (v=8; v-->0; )
@@ -349,25 +338,23 @@ void terminal_char_load_medres(padWord charNum, charData theChar)
 {
   memset(char_data,0,sizeof(char_data));
   
-  // load and transpose character data into 8x16 array  
   for (curr_word=0;curr_word<8;curr_word++)
     {
       for (u=16; u-->0; )
 	{
-	  if (theChar[curr_word] & 1<<u)
+	  if ((theChar[curr_word]) & (1<<u))
 	    {
-	      char_data[u^0x0F&0x0F]|=BTAB[curr_word];
+	      char_data[(u^0x0F&0x0F)]|=BTAB[curr_word];
 	    }
 	}
     }
 
-  // OR pixel rows together, may not work for this one.
-  fontm23[(charNum*6)+0]=char_data[0]|char_data[1]|char_data[2]<<8;
-  fontm23[(charNum*6)+1]=char_data[3]|char_data[4]<<8;
-  fontm23[(charNum*6)+2]=char_data[5]|char_data[6]|char_data[7]<<8;
-  fontm23[(charNum*6)+3]=char_data[8]|char_data[9]<<8;
-  fontm23[(charNum*6)+4]=char_data[10]|char_data[11]|char_data[12]<<8;
-  fontm23[(charNum*6)+5]=char_data[13]|char_data[14]|char_data[15]<<8;
+  fontm23[(charNum*6)+0]=(char_data[0]|char_data[1]|char_data[2])<<8;
+  fontm23[(charNum*6)+1]=(char_data[3]|char_data[4])<<8;
+  fontm23[(charNum*6)+2]=(char_data[5]|char_data[6]|char_data[7])<<8;
+  fontm23[(charNum*6)+3]=(char_data[8]|char_data[9])<<8;
+  fontm23[(charNum*6)+4]=(char_data[10]|char_data[11]|char_data[12])<<8;
+  fontm23[(charNum*6)+5]=(char_data[13]|char_data[14]|char_data[15])<<8;
   
 }
 
@@ -375,86 +362,77 @@ void terminal_char_load_hires(padWord charNum, charData theChar)
 {
   memset(char_data,0,sizeof(char_data));
   
-  // load and transpose character data into 8x16 array  
   for (curr_word=0;curr_word<8;curr_word++)
     {
       for (u=16; u-->0; )
 	{
-	  if (theChar[curr_word] & 1<<u)
+	  if ((theChar[curr_word]) & (1<<u))
 	    {
-	      char_data[u^0x0F&0x0F]|=BTAB[curr_word];
+	      char_data[(u^0x0F&0x0F)]|=BTAB[curr_word];
 	    }
 	}
     }
 
-  // OR pixel rows together
-  fontm23[(charNum*12)+0]=char_data[0]<<8;
-  fontm23[(charNum*12)+1]=char_data[1]<<8;
-  fontm23[(charNum*12)+2]=char_data[2]|char_data[3]<<8;
-  fontm23[(charNum*12)+3]=char_data[4]<<8;
-  fontm23[(charNum*12)+4]=char_data[5]<<8;
-  fontm23[(charNum*12)+5]=char_data[6]|char_data[7]<<8;
-  fontm23[(charNum*12)+6]=char_data[8]<<8;
-  fontm23[(charNum*12)+7]=char_data[9]<<8;
-  fontm23[(charNum*12)+8]=char_data[10]|char_data[11]<<8;
-  fontm23[(charNum*12)+9]=char_data[12]<<8;
-  fontm23[(charNum*12)+10]=char_data[13]<<8;
-  fontm23[(charNum*12)+11]=char_data[14]|char_data[15]<<8;
+  fontm23[(charNum*12)+0]=(char_data[0])<<8;
+  fontm23[(charNum*12)+1]=(char_data[1])<<8;
+  fontm23[(charNum*12)+2]=(char_data[2]|char_data[3])<<8;
+  fontm23[(charNum*12)+3]=(char_data[4])<<8;
+  fontm23[(charNum*12)+4]=(char_data[5])<<8;
+  fontm23[(charNum*12)+5]=(char_data[6]|char_data[7])<<8;
+  fontm23[(charNum*12)+6]=(char_data[8])<<8;
+  fontm23[(charNum*12)+7]=(char_data[9])<<8;
+  fontm23[(charNum*12)+8]=(char_data[10]|char_data[11])<<8;
+  fontm23[(charNum*12)+9]=(char_data[12])<<8;
+  fontm23[(charNum*12)+10]=(char_data[13])<<8;
+  fontm23[(charNum*12)+11]=(char_data[14]|char_data[15])<<8;
 }
 
 void terminal_char_load_ttmedres(padWord charNum, charData theChar)
 {
   memset(char_data,0,sizeof(char_data));
   
-  // load and transpose character data into 8x16 array  
   for (curr_word=0;curr_word<8;curr_word++)
     {
       for (u=16; u-->0; )
 	{
-	  if (theChar[curr_word] & 1<<u)
+	  if ((theChar[curr_word]) & (1<<u))
 	    {
-	      char_data[u^0x0F&0x0F]|=BTAB[curr_word];
+	      char_data[(u^0x0F&0x0F)]|=BTAB[curr_word];
 	    }
 	}
     }
 
-  // OR pixel rows together
-  fontm23[(charNum*15)+0]=char_data[0]<<8;
-  fontm23[(charNum*15)+1]=char_data[1]<<8;
-  fontm23[(charNum*15)+2]=char_data[2]<<8;
-  fontm23[(charNum*15)+3]=char_data[3]<<8;
-  fontm23[(charNum*15)+4]=char_data[4]<<8;
-  fontm23[(charNum*15)+5]=char_data[5]<<8;
-  fontm23[(charNum*15)+6]=char_data[6]<<8;
-  fontm23[(charNum*15)+7]=char_data[7]<<8;
-  fontm23[(charNum*15)+8]=char_data[8]<<8;
-  fontm23[(charNum*15)+9]=char_data[9]<<8;
-  fontm23[(charNum*15)+10]=char_data[10]<<8;
-  fontm23[(charNum*15)+11]=char_data[11]<<8;
-  fontm23[(charNum*15)+12]=char_data[12]<<8;
-  fontm23[(charNum*15)+13]=char_data[13]<<8;
+  fontm23[(charNum*15)+0]=(char_data[0])<<8;
+  fontm23[(charNum*15)+1]=(char_data[1])<<8;
+  fontm23[(charNum*15)+2]=(char_data[2])<<8;
+  fontm23[(charNum*15)+3]=(char_data[3])<<8;
+  fontm23[(charNum*15)+4]=(char_data[4])<<8;
+  fontm23[(charNum*15)+5]=(char_data[5])<<8;
+  fontm23[(charNum*15)+6]=(char_data[6])<<8;
+  fontm23[(charNum*15)+7]=(char_data[7])<<8;
+  fontm23[(charNum*15)+8]=(char_data[8])<<8;
+  fontm23[(charNum*15)+9]=(char_data[9])<<8;
+  fontm23[(charNum*15)+10]=(char_data[10])<<8;
+  fontm23[(charNum*15)+11]=(char_data[11])<<8;
+  fontm23[(charNum*15)+12]=(char_data[12])<<8;
+  fontm23[(charNum*15)+13]=(char_data[13])<<8;
   fontm23[(charNum*15)+14]=(char_data[14]|char_data[15])<<8;
 }
 
 void terminal_char_load_fullres(padWord charnum, charData theChar)
 {
-  // clear char data
   memset(&fontm23[charnum*FONT_SIZE_Y],0,16);
 
-  // Transpose character data
   for (curr_word=0;curr_word<8;curr_word++)
     {
       for (u=16; u-->0; )
 	{
-	  if (theChar[curr_word] & 1<<u)
+	  if ((theChar[curr_word]) & (1<<u))
 	    {
 	      fontm23[(charnum*FONT_SIZE_Y)+u^0x0f&0x0f]|=BTAB[curr_word]<<8;
 	    }
 	}
     }
-
-  // and...that's it, really. :)
-  
 }
 
 /**

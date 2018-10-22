@@ -17,6 +17,9 @@
 
 #define ACCESS	0x3c
 
+#define true 1
+#define false 0
+
 typedef	unsigned char	padByte;
 typedef	enum {padF, padT} padBool;
 typedef	unsigned char	padChar;

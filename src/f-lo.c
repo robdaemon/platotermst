@@ -2,12 +2,10 @@
  * Font definitions for font memories M0 and M1
  */
 
-#include <stdint.h>
+unsigned char FONT_SIZE_X_LORES=5;
+unsigned char FONT_SIZE_Y_LORES=6;
 
-uint8_t FONT_SIZE_X_LORES=5;
-uint8_t FONT_SIZE_Y_LORES=6;
-
-uint16_t font_lores[]={
+unsigned short font_lores[]={
   0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,    /* SPACE 0x20 */
   0x4000,0x4000,0x4000,0x0000,0x4000,0x0000,    /* ! 0x21 */
   0xA000,0xA000,0x0000,0x0000,0x0000,0x0000,    /* " 0x22 */
